@@ -850,6 +850,10 @@
         "pagination": {
           "showing": "Mostrando {{start}} a {{end}} de {{total}} registros"
         },
+        "enterprise_only": "Los registros de auditoría solo están disponibles en el plan Enterprise",
+        "enterprise_feature": "Función Enterprise",
+        "enterprise_description": "Los registros de auditoría son una función premium disponible solo para organizaciones en nuestro plan Enterprise. Actualiza para obtener visibilidad total de las actividades de tu organización.",
+        "upgrade_button": "Actualizar a Enterprise",
         "modals": {
           "payload": {
             "title": "Payload del evento",
