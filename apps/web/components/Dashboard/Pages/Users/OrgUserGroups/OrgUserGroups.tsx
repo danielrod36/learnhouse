@@ -51,7 +51,7 @@ function OrgUserGroups() {
     return (
         <>
             <div className="h-6"></div>
-            <div className="ml-10 mr-10 mx-auto bg-white rounded-xl shadow-xs px-4 py-4">
+            <div className="mx-4 md:mx-10 bg-white rounded-xl shadow-xs px-4 py-4">
                 <div className="flex flex-col bg-gray-50 -space-y-1  px-5 py-3 rounded-md mb-3 ">
                     <h1 className="font-bold text-xl text-gray-800">{t('dashboard.users.usergroups.title')}</h1>
                     <h2 className="text-gray-500 text-sm">

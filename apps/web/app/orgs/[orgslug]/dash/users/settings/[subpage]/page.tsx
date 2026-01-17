@@ -2,9 +2,8 @@
 import React, { useEffect, use } from 'react';
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { useMediaQuery } from 'usehooks-ts'
 import { getUriWithOrg } from '@services/config/config'
-import { Monitor, ScanEye, SquareUserRound, UserPlus, Users, Shield } from 'lucide-react'
+import { ScanEye, SquareUserRound, UserPlus, Users, Shield } from 'lucide-react'
 import BreadCrumbs from '@components/Dashboard/Misc/BreadCrumbs'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { useOrg } from '@components/Contexts/OrgContext'
@@ -31,7 +30,6 @@ function UsersSettingsPage(props: { params: Promise<SettingsParams> }) {
   const { isEE } = useEEStatus()
   const [H1Label, setH1Label] = React.useState('')
   const [H2Label, setH2Label] = React.useState('')
-  const isMobile = useMediaQuery('(max-width: 767px)')
 
   function handleLabels() {
     if (params.subpage == 'users') {
@@ -64,27 +62,13 @@ function UsersSettingsPage(props: { params: Promise<SettingsParams> }) {
     handleLabels()
   }, [session, org, params.subpage, params, t])
 
-  if (isMobile) {
-    // TODO: Work on a better mobile experience
-    return (
-      <div className="h-screen w-full bg-[#f8f8f8] flex items-center justify-center p-4">
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <h2 className="text-xl font-bold mb-4">{t('dashboard.users.settings.mobile.title')}</h2>
-          <Monitor className='mx-auto my-5' size={60} />
-          <p>{t('dashboard.users.settings.mobile.message1')}</p>
-          <p>{t('dashboard.users.settings.mobile.message2')}</p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="h-screen w-full bg-[#f8f8f8] grid grid-rows-[auto_1fr]">
-      <div className="pl-10 pr-10  tracking-tight bg-[#fcfbfc] z-10 shadow-[0px_4px_16px_rgba(0,0,0,0.06)]">
+      <div className="px-4 md:px-10 tracking-tight bg-[#fcfbfc] z-10 shadow-[0px_4px_16px_rgba(0,0,0,0.06)]">
         <BreadCrumbs type="orgusers"></BreadCrumbs>
-        <div className="my-2  py-3">
+        <div className="my-2 py-3">
           <div className="w-100 flex flex-col space-y-1">
-            <div className="pt-3 flex font-bold text-4xl tracking-tighter">
+            <div className="pt-3 flex font-bold text-2xl md:text-4xl tracking-tighter">
               {H1Label}
             </div>
             <div className="flex font-medium text-gray-400 text-md">
@@ -92,7 +76,7 @@ function UsersSettingsPage(props: { params: Promise<SettingsParams> }) {
             </div>
           </div>
         </div>
-        <div className="flex space-x-5 font-black text-sm">
+        <div className="flex space-x-5 font-black text-sm overflow-x-auto pb-1 no-scrollbar">
           <Link
             href={
               getUriWithOrg(params.orgslug, '') + `/dash/users/settings/users`

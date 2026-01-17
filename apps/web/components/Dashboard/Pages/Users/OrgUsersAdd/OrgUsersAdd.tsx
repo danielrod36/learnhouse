@@ -58,7 +58,7 @@ function OrgUsersAdd() {
             {!isLoading ? (
                 <>
                     <div className="h-6"></div>
-                    <div className="ml-10 mr-10 mx-auto bg-white rounded-xl shadow-xs px-4 py-4 anit ">
+                    <div className="mx-4 md:mx-10 bg-white rounded-xl shadow-xs px-4 py-4 anit ">
                         <div className="flex flex-col bg-gray-50 -space-y-1  px-5 py-3 rounded-md mb-3 ">
                             <h1 className="font-bold text-xl text-gray-800">{t('dashboard.users.invite_members.title')}</h1>
                             <h2 className="text-gray-500  text-md">
@@ -71,7 +71,7 @@ function OrgUsersAdd() {
                                 onChange={(e) => setInvitedUsers(e.target.value)}
                                 className='w-full h-[200px] rounded-md border px-3 py-2 bg-gray-100/40 placeholder:italic placeholder:text-slate-300' placeholder={t('dashboard.users.invite_members.email_placeholder')} name="" id="" ></textarea>
                         </div>
-                        <div className="flex space-x-2 mx-auto my-5 ml-2 items-center space-x-4 justify-between">
+                        <div className="flex flex-col md:flex-row gap-4 mx-auto my-5 ml-2 justify-between items-start md:items-center">
 
                             <div className='flex space-x-2 items-center'>
                                 <p className='flex items-center'>{t('dashboard.users.invite_members.invite_code_label')} </p>

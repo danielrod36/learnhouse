@@ -60,7 +60,7 @@ function OrgUsers() {
         <>
           <Toast></Toast>
           <div className="h-6"></div>
-          <div className="ml-10 mr-10 mx-auto bg-white rounded-xl shadow-xs px-4 py-4  ">
+          <div className="mx-4 md:mx-10 bg-white rounded-xl shadow-xs px-4 py-4  ">
             <div className="flex flex-col bg-gray-50 -space-y-1  px-5 py-3 rounded-md mb-3 ">
               <h1 className="font-bold text-xl text-gray-800">{t('dashboard.users.active_users.title')}</h1>
               <h2 className="text-gray-500  text-md">
@@ -68,79 +68,81 @@ function OrgUsers() {
                 {t('dashboard.users.active_users.subtitle')}{' '}
               </h2>
             </div>
-            <table className="table-auto w-full text-left whitespace-nowrap rounded-md overflow-hidden">
-              <thead className="bg-gray-100 text-gray-500 rounded-xl uppercase">
-                <tr className="font-bolder text-sm">
-                  <th className="py-3 px-4">{t('dashboard.users.active_users.table.user')}</th>
-                  <th className="py-3 px-4">{t('dashboard.users.active_users.table.role')}</th>
-                  <th className="py-3 px-4">{t('dashboard.users.active_users.table.actions')}</th>
-                </tr>
-              </thead>
-              <>
-                <tbody className="mt-5 bg-white rounded-md">
-                  {orgUsers?.map((user: any) => (
-                    <tr
-                      key={user.user.id}
-                      className="border-b border-gray-200 border-dashed"
-                    >
-                      <td className="py-3 px-4 flex space-x-2 items-center">
-                        <span>
-                          {user.user.first_name + ' ' + user.user.last_name}
-                        </span>
-                        <span className="text-xs bg-neutral-100 p-1 px-2 rounded-full text-neutral-400 font-semibold">
-                          @{user.user.username}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4">{user.role.name}</td>
-                      <td className="py-3 px-4 flex space-x-2 items-end">
-                        <Modal
-                          isDialogOpen={
-                            rolesModal && selectedUser === user.user.user_uuid
-                          }
-                          onOpenChange={() =>
-                            handleRolesModal(user.user.user_uuid)
-                          }
-                          minHeight="no-min"
-                          dialogContent={
-                            <RolesUpdate
-                              alreadyAssignedRole={user.role.role_uuid}
-                              setRolesModal={setRolesModal}
-                              user={user}
-                            />
-                          }
-                          dialogTitle={t('dashboard.users.active_users.modals.update_role.title')}
-                          dialogDescription={
-                            t('dashboard.users.active_users.modals.update_role.description', { username: user.user.username })
-                          }
-                          dialogTrigger={
-                            <button className="flex space-x-2 hover:cursor-pointer p-1 px-3 bg-yellow-700 rounded-md font-bold items-center text-sm text-yellow-100">
-                              <KeyRound className="w-4 h-4" />
-                              <span> {t('dashboard.users.active_users.actions.edit_role')}</span>
-                            </button>
-                          }
-                        />
+            <div className="overflow-x-auto">
+              <table className="table-auto w-full text-left whitespace-nowrap rounded-md overflow-hidden">
+                <thead className="bg-gray-100 text-gray-500 rounded-xl uppercase">
+                  <tr className="font-bolder text-sm">
+                    <th className="py-3 px-4">{t('dashboard.users.active_users.table.user')}</th>
+                    <th className="py-3 px-4">{t('dashboard.users.active_users.table.role')}</th>
+                    <th className="py-3 px-4">{t('dashboard.users.active_users.table.actions')}</th>
+                  </tr>
+                </thead>
+                <>
+                  <tbody className="mt-5 bg-white rounded-md">
+                    {orgUsers?.map((user: any) => (
+                      <tr
+                        key={user.user.id}
+                        className="border-b border-gray-200 border-dashed"
+                      >
+                        <td className="py-3 px-4 flex space-x-2 items-center">
+                          <span>
+                            {user.user.first_name + ' ' + user.user.last_name}
+                          </span>
+                          <span className="text-xs bg-neutral-100 p-1 px-2 rounded-full text-neutral-400 font-semibold">
+                            @{user.user.username}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4">{user.role.name}</td>
+                        <td className="py-3 px-4 flex space-x-2 items-end">
+                          <Modal
+                            isDialogOpen={
+                              rolesModal && selectedUser === user.user.user_uuid
+                            }
+                            onOpenChange={() =>
+                              handleRolesModal(user.user.user_uuid)
+                            }
+                            minHeight="no-min"
+                            dialogContent={
+                              <RolesUpdate
+                                alreadyAssignedRole={user.role.role_uuid}
+                                setRolesModal={setRolesModal}
+                                user={user}
+                              />
+                            }
+                            dialogTitle={t('dashboard.users.active_users.modals.update_role.title')}
+                            dialogDescription={
+                              t('dashboard.users.active_users.modals.update_role.description', { username: user.user.username })
+                            }
+                            dialogTrigger={
+                              <button className="flex space-x-2 hover:cursor-pointer p-1 px-3 bg-yellow-700 rounded-md font-bold items-center text-sm text-yellow-100">
+                                <KeyRound className="w-4 h-4" />
+                                <span> {t('dashboard.users.active_users.actions.edit_role')}</span>
+                              </button>
+                            }
+                          />
 
-                        <ConfirmationModal
-                          confirmationButtonText={t('dashboard.users.active_users.modals.remove_user.button')}
-                          confirmationMessage={t('dashboard.users.active_users.modals.remove_user.message')}
-                          dialogTitle={t('dashboard.users.active_users.modals.remove_user.title', { username: user.user.username })}
-                          dialogTrigger={
-                            <button className="mr-2 flex space-x-2 hover:cursor-pointer p-1 px-3 bg-rose-700 rounded-md font-bold items-center text-sm text-rose-100">
-                              <LogOut className="w-4 h-4" />
-                              <span> {t('dashboard.users.active_users.actions.remove_from_org')}</span>
-                            </button>
-                          }
-                          functionToExecute={() => {
-                            handleRemoveUser(user.user.id)
-                          }}
-                          status="warning"
-                        ></ConfirmationModal>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </>
-            </table>
+                          <ConfirmationModal
+                            confirmationButtonText={t('dashboard.users.active_users.modals.remove_user.button')}
+                            confirmationMessage={t('dashboard.users.active_users.modals.remove_user.message')}
+                            dialogTitle={t('dashboard.users.active_users.modals.remove_user.title', { username: user.user.username })}
+                            dialogTrigger={
+                              <button className="mr-2 flex space-x-2 hover:cursor-pointer p-1 px-3 bg-rose-700 rounded-md font-bold items-center text-sm text-rose-100">
+                                <LogOut className="w-4 h-4" />
+                                <span> {t('dashboard.users.active_users.actions.remove_from_org')}</span>
+                              </button>
+                            }
+                            functionToExecute={() => {
+                              handleRemoveUser(user.user.id)
+                            }}
+                            status="warning"
+                          ></ConfirmationModal>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </>
+              </table>
+            </div>
           </div>
         </>
       )}

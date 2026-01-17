@@ -183,9 +183,9 @@ const OrgAuditLogs = () => {
   return (
     <div>
       <div className="h-6"></div>
-      <div className="ml-10 mr-10 mx-auto bg-white rounded-xl shadow-xs px-4 py-4">
+      <div className="mx-4 md:mx-10 bg-white rounded-xl shadow-xs px-4 py-4">
         <div className="flex flex-col bg-gray-50 -space-y-1 px-5 py-3 rounded-md mb-3">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col xl:flex-row gap-4 xl:justify-between xl:items-center">
             <div>
               <h1 className="font-bold text-xl text-gray-800 flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-indigo-600" />
@@ -195,7 +195,7 @@ const OrgAuditLogs = () => {
                 {t('dashboard.organization.audit_logs.subtitle')}
               </h2>
             </div>
-            <div className="flex gap-2 items-center">
+            <div className="flex flex-wrap gap-2 items-center">
                <button 
                 onClick={handleRefresh}
                 className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${isValidating ? 'animate-spin' : ''}`}
@@ -332,129 +332,131 @@ const OrgAuditLogs = () => {
           </div>
         </div>
 
-        <table className="table-auto w-full text-left whitespace-nowrap rounded-md overflow-hidden">
-          <thead className="bg-gray-100 text-gray-500 rounded-xl uppercase">
-            <tr className="font-bolder text-[10px] tracking-wider">
-              <th className="py-3 px-4">{t('dashboard.organization.audit_logs.table.timestamp')}</th>
-              <th className="py-3 px-4">{t('dashboard.organization.audit_logs.table.user')}</th>
-              <th className="py-3 px-4">{t('dashboard.organization.audit_logs.table.resource')}</th>
-              <th className="py-3 px-4">{t('dashboard.organization.audit_logs.table.path_method')}</th>
-              <th className="py-3 px-4">{t('dashboard.organization.audit_logs.table.ip_address')}</th>
-              <th className="py-3 px-4 text-right">{t('dashboard.organization.audit_logs.table.status')}</th>
-              <th className="py-3 px-4 text-right">{t('dashboard.organization.audit_logs.table.payload')}</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white relative">
-            {isLoading && !data ? (
-              <tr>
-                <td colSpan={7} className="py-20 text-center text-gray-400">
-                  <div className="flex flex-col items-center gap-2">
-                      <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin opacity-20" />
-                      <span className="text-sm font-medium">{t('dashboard.organization.audit_logs.loading')}</span>
-                  </div>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="table-auto w-full text-left whitespace-nowrap rounded-md overflow-hidden">
+            <thead className="bg-gray-100 text-gray-500 rounded-xl uppercase">
+              <tr className="font-bolder text-[10px] tracking-wider">
+                <th className="py-3 px-4">{t('dashboard.organization.audit_logs.table.timestamp')}</th>
+                <th className="py-3 px-4">{t('dashboard.organization.audit_logs.table.user')}</th>
+                <th className="py-3 px-4">{t('dashboard.organization.audit_logs.table.resource')}</th>
+                <th className="py-3 px-4">{t('dashboard.organization.audit_logs.table.path_method')}</th>
+                <th className="py-3 px-4">{t('dashboard.organization.audit_logs.table.ip_address')}</th>
+                <th className="py-3 px-4 text-right">{t('dashboard.organization.audit_logs.table.status')}</th>
+                <th className="py-3 px-4 text-right">{t('dashboard.organization.audit_logs.table.payload')}</th>
               </tr>
-            ) : logs.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="py-10 text-center text-gray-400">
-                  {t('dashboard.organization.audit_logs.no_logs')}
-                </td>
-              </tr>
-            ) : (
-              logs.map((log: any) => (
-                <tr key={log.id} className="border-b border-gray-200 border-dashed hover:bg-gray-50/50 transition-colors">
-                  <td className="py-3 px-4">
-                    <div className="flex flex-col text-sm">
-                      <span className="font-semibold text-gray-700">{dayjs(log.created_at).format('MMM DD, YYYY')}</span>
-                      <span className="text-[10px] text-gray-400">{dayjs(log.created_at).format('HH:mm:ss')}</span>
+            </thead>
+            <tbody className="bg-white relative">
+              {isLoading && !data ? (
+                <tr>
+                  <td colSpan={7} className="py-20 text-center text-gray-400">
+                    <div className="flex flex-col items-center gap-2">
+                        <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin opacity-20" />
+                        <span className="text-sm font-medium">{t('dashboard.organization.audit_logs.loading')}</span>
                     </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-2">
-                        <UserAvatar 
-                            width={28} 
-                            userId={log.user_id?.toString()} 
-                            rounded="rounded-full"
-                            showProfilePopup={true}
-                        />
-                        <div className="flex flex-col">
-                            <span className="text-sm font-medium text-gray-800">
-                                @{log.username || 'System'}
-                            </span>
-                            {log.user_id && (
-                                <span className="text-[10px] text-gray-400 font-mono tracking-tighter">ID: {log.user_id}</span>
-                            )}
-                        </div>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-1.5 text-gray-600">
-                      <Activity className="w-3.5 h-3.5 text-gray-400" />
-                      <span className="text-sm capitalize">{log.resource}</span>
-                      {log.resource_id && (
-                        <span className="text-[10px] bg-gray-50 border border-gray-200 px-1 rounded text-gray-400 font-mono">
-                          {log.resource_id}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-1 text-[11px] text-gray-500 font-mono truncate max-w-[200px]">
-                        <Terminal className="w-3 h-3" />
-                        {log.path}
-                      </div>
-                      <span className={`w-fit text-[9px] font-bold px-1.5 py-0.5 rounded ${
-                        log.method === 'GET' ? 'text-blue-600 bg-blue-50' :
-                        log.method === 'POST' ? 'text-green-600 bg-green-50' :
-                        log.method === 'PUT' ? 'text-amber-600 bg-amber-50' :
-                        'text-red-600 bg-red-50'
-                      }`}>
-                        {log.method}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex items-center gap-1 text-xs text-gray-400 font-mono">
-                      <Globe className="w-3 h-3" />
-                      {log.ip_address || '—'}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${getStatusColor(log.status_code)}`}>
-                      {log.status_code}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                      {log.payload && Object.keys(log.payload).length > 0 ? (
-                      <Modal
-                        dialogTitle={t('dashboard.organization.audit_logs.modals.payload.title')}
-                        dialogDescription={t('dashboard.organization.audit_logs.modals.payload.description', { action: log.action })}
-                        minHeight="no-min"
-                        isDialogOpen={openModalId === log.id}
-                        onOpenChange={(open) => setOpenModalId(open ? log.id : null)}
-                        dialogContent={
-                          <div className="bg-gray-900 rounded-lg p-4 mt-2 overflow-auto max-h-[400px]">
-                            <pre className="text-xs text-green-400 font-mono">
-                              {JSON.stringify(log.payload, null, 2)}
-                            </pre>
-                          </div>
-                        }
-                        dialogTrigger={
-                          <button className="p-1.5 hover:bg-gray-100 rounded-md transition-colors group">
-                            <Eye className="w-4 h-4 text-gray-400 group-hover:text-indigo-600" />
-                          </button>
-                        }
-                      />
-                    ) : (
-                      <span className="text-gray-300 text-xs">—</span>
-                    )}
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : logs.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-10 text-center text-gray-400">
+                    {t('dashboard.organization.audit_logs.no_logs')}
+                  </td>
+                </tr>
+              ) : (
+                logs.map((log: any) => (
+                  <tr key={log.id} className="border-b border-gray-200 border-dashed hover:bg-gray-50/50 transition-colors">
+                    <td className="py-3 px-4">
+                      <div className="flex flex-col text-sm">
+                        <span className="font-semibold text-gray-700">{dayjs(log.created_at).format('MMM DD, YYYY')}</span>
+                        <span className="text-[10px] text-gray-400">{dayjs(log.created_at).format('HH:mm:ss')}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-2">
+                          <UserAvatar
+                              width={28}
+                              userId={log.user_id?.toString()}
+                              rounded="rounded-full"
+                              showProfilePopup={true}
+                          />
+                          <div className="flex flex-col">
+                              <span className="text-sm font-medium text-gray-800">
+                                  @{log.username || 'System'}
+                              </span>
+                              {log.user_id && (
+                                  <span className="text-[10px] text-gray-400 font-mono tracking-tighter">ID: {log.user_id}</span>
+                              )}
+                          </div>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-1.5 text-gray-600">
+                        <Activity className="w-3.5 h-3.5 text-gray-400" />
+                        <span className="text-sm capitalize">{log.resource}</span>
+                        {log.resource_id && (
+                          <span className="text-[10px] bg-gray-50 border border-gray-200 px-1 rounded text-gray-400 font-mono">
+                            {log.resource_id}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1 text-[11px] text-gray-500 font-mono truncate max-w-[200px]">
+                          <Terminal className="w-3 h-3" />
+                          {log.path}
+                        </div>
+                        <span className={`w-fit text-[9px] font-bold px-1.5 py-0.5 rounded ${
+                          log.method === 'GET' ? 'text-blue-600 bg-blue-50' :
+                          log.method === 'POST' ? 'text-green-600 bg-green-50' :
+                          log.method === 'PUT' ? 'text-amber-600 bg-amber-50' :
+                          'text-red-600 bg-red-50'
+                        }`}>
+                          {log.method}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-1 text-xs text-gray-400 font-mono">
+                        <Globe className="w-3 h-3" />
+                        {log.ip_address || '—'}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${getStatusColor(log.status_code)}`}>
+                        {log.status_code}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                        {log.payload && Object.keys(log.payload).length > 0 ? (
+                        <Modal
+                          dialogTitle={t('dashboard.organization.audit_logs.modals.payload.title')}
+                          dialogDescription={t('dashboard.organization.audit_logs.modals.payload.description', { action: log.action })}
+                          minHeight="no-min"
+                          isDialogOpen={openModalId === log.id}
+                          onOpenChange={(open) => setOpenModalId(open ? log.id : null)}
+                          dialogContent={
+                            <div className="bg-gray-900 rounded-lg p-4 mt-2 overflow-auto max-h-[400px]">
+                              <pre className="text-xs text-green-400 font-mono">
+                                {JSON.stringify(log.payload, null, 2)}
+                              </pre>
+                            </div>
+                          }
+                          dialogTrigger={
+                            <button className="p-1.5 hover:bg-gray-100 rounded-md transition-colors group">
+                              <Eye className="w-4 h-4 text-gray-400 group-hover:text-indigo-600" />
+                            </button>
+                          }
+                        />
+                      ) : (
+                        <span className="text-gray-300 text-xs">—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
 
         {/* Pagination Controls */}
         {total > ITEMS_PER_PAGE && (
