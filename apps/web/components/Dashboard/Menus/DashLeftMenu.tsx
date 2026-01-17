@@ -1,9 +1,10 @@
 'use client'
 import { useOrg } from '@components/Contexts/OrgContext'
 import { signOut } from 'next-auth/react'
-import { Backpack, BadgeDollarSign, BookCopy, ChevronLeft, ChevronRight, HelpCircle, Home, LogOut, Package2, School, Settings, Users } from 'lucide-react'
+import { Backpack, BadgeDollarSign, BookCopy, Check, ChevronLeft, ChevronRight, HelpCircle, Home, Languages, LogOut, Package2, School, Settings, Users, Sun, Moon, Monitor, SunMoon } from 'lucide-react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import { useTheme } from 'next-themes'
 import UserAvatar from '../../Objects/UserAvatar'
 import AdminAuthorization from '@components/Security/AdminAuthorization'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
@@ -22,7 +23,6 @@ import {
   DropdownMenuSubContent,
   DropdownMenuPortal,
 } from "@components/ui/dropdown-menu"
-import { Check, Languages } from 'lucide-react'
 import { AVAILABLE_LANGUAGES } from '@/lib/languages'
 import { cn } from '@/lib/utils'
 import { useEEStatus } from '@components/Hooks/useEEStatus'
@@ -34,6 +34,7 @@ function DashLeftMenu() {
   const { t, i18n } = useTranslation()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const { isEE } = useEEStatus()
+  const { setTheme, theme } = useTheme()
 
   // Load collapse state from localStorage
   useEffect(() => {
@@ -216,6 +217,37 @@ function DashLeftMenu() {
                           {i18n.language === language.code && <Check size={14} />}
                         </DropdownMenuItem>
                       ))}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="flex items-center space-x-2">
+                    <SunMoon size={14} />
+                    <span>Theme</span>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => setTheme("light")} className="flex items-center justify-between cursor-pointer">
+                        <div className="flex items-center space-x-2">
+                            <Sun size={14} />
+                            <span>Light</span>
+                        </div>
+                        {theme === "light" && <Check size={14} />}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTheme("dark")} className="flex items-center justify-between cursor-pointer">
+                        <div className="flex items-center space-x-2">
+                            <Moon size={14} />
+                            <span>Dark</span>
+                        </div>
+                        {theme === "dark" && <Check size={14} />}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setTheme("system")} className="flex items-center justify-between cursor-pointer">
+                        <div className="flex items-center space-x-2">
+                            <Monitor size={14} />
+                            <span>System</span>
+                        </div>
+                        {theme === "system" && <Check size={14} />}
+                      </DropdownMenuItem>
                     </DropdownMenuSubContent>
                   </DropdownMenuPortal>
                 </DropdownMenuSub>

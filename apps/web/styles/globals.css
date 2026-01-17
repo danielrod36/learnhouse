@@ -130,13 +130,6 @@ layer(base);
     box-sizing: border-box;
   }
 
-  @media (prefers-color-scheme: dark) {
-    body {
-      color: black;
-      background: #fbfbfb;
-    }
-  }
-
   /* Basic editor styles */
   .ProseMirror > * + * {
     margin-top: 0.75em;
