@@ -1,12 +1,11 @@
 from typing import Literal, List
-from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, Request, UploadFile
 from pydantic import EmailStr
 from sqlmodel import Session
 from src.services.users.password_reset import (
     change_password_with_reset_code,
     send_reset_password_code,
 )
-from src.services.orgs.orgs import get_org_join_mechanism
 from src.security.auth import get_current_user
 from src.core.events.database import get_db_session
 from src.db.courses.courses import CourseRead
@@ -89,17 +88,7 @@ async def api_create_user_with_orgid(
     Create User with Org ID
     """
 
-    # TODO(fix) : This is temporary, logic should be moved to service
-    if (
-        await get_org_join_mechanism(request, org_id, current_user, db_session)
-        == "inviteOnly"
-    ):
-        raise HTTPException(
-            status_code=403,
-            detail="You need an invite to join this organization",
-        )
-    else:
-        return await create_user(request, db_session, current_user, user_object, org_id)
+    return await create_user(request, db_session, current_user, user_object, org_id)
 
 
 @router.post("/{org_id}/invite/{invite_code}", response_model=UserRead, tags=["users"])
@@ -116,19 +105,9 @@ async def api_create_user_with_orgid_and_invite(
     Create User with Org ID and invite code
     """
 
-    # TODO: This is temporary, logic should be moved to service
-    if (
-        await get_org_join_mechanism(request, org_id, current_user, db_session)
-        == "inviteOnly"
-    ):
-        return await create_user_with_invite(
-            request, db_session, current_user, user_object, org_id, invite_code
-        )
-    else:
-        raise HTTPException(
-            status_code=403,
-            detail="This organization does not require an invite code",
-        )
+    return await create_user_with_invite(
+        request, db_session, current_user, user_object, org_id, invite_code
+    )
 
 
 @router.post("/", response_model=UserRead, tags=["users"])

@@ -650,7 +650,7 @@ async def upload_org_preview_service(
     org_uuid: str,
 ) -> dict:
     # No need for request or current_user since we're not doing RBAC checks for previews
-    
+
     # Upload preview
     name_in_disk = await upload_org_preview(preview_file, org_uuid)
 
@@ -695,7 +695,7 @@ async def update_org_landing(
 
     # Convert to OrganizationConfigBase model and back to ensure all fields exist
     config_model = OrganizationConfigBase(**org_config.config)
-    
+
     # Update the landing object
     config_model.landing = landing_object
 
@@ -739,44 +739,6 @@ async def upload_org_landing_content_service(
         "filename": name_in_disk
     }
 
-
-async def get_org_join_mechanism(
-    request: Request,
-    org_id: int,
-    current_user: PublicUser | AnonymousUser,
-    db_session: Session,
-):
-    statement = select(Organization).where(Organization.id == org_id)
-    result = db_session.exec(statement)
-
-    org = result.first()
-
-    if not org:
-        raise HTTPException(
-            status_code=404,
-            detail="Organization not found",
-        )
-
-    # RBAC check
-    await rbac_check(request, org.org_uuid, current_user, "read", db_session)
-
-    # Get org config
-    statement = select(OrganizationConfig).where(OrganizationConfig.org_id == org.id)
-    result = db_session.exec(statement)
-
-    org_config = result.first()
-
-    if org_config is None:
-        logging.error(f"Organization {org_id} has no config")
-        raise HTTPException(
-            status_code=404,
-            detail="Organization config not found",
-        )
-
-    config = OrganizationConfigBase(**org_config.config)
-    return config.features.members.signup_mode
-
-
 ## 🔒 RBAC Utils ##
 
 
@@ -790,7 +752,7 @@ async def rbac_check(
     # Organizations are readable by anyone
     if action == "read":
         return True
-    
+
     # Internal users can do anything
     if isinstance(current_user, InternalUser):
         return True
