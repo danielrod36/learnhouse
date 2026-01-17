@@ -11,6 +11,7 @@ from src.services.users.usergroups import add_users_to_usergroup
 from src.services.users.emails import (
     send_account_creation_email,
 )
+from src.services.orgs.orgs import get_org_join_mechanism
 from src.services.orgs.invites import get_invite_code
 from src.services.users.avatars import upload_avatar
 from src.db.roles import Role, RoleRead
@@ -41,8 +42,20 @@ async def create_user(
     current_user: PublicUser | AnonymousUser,
     user_object: UserCreate,
     org_id: int,
+    allow_invite_only: bool = False,
 ):
     user = User.model_validate(user_object)
+
+    # Check org join mechanism
+    if (
+        await get_org_join_mechanism(request, org_id, current_user, db_session)
+        == "inviteOnly"
+        and not allow_invite_only
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="You need an invite to join this organization",
+        )
 
     # RBAC check
     await rbac_check(request, current_user, "create", "user_x", db_session)
@@ -133,6 +146,14 @@ async def create_user_with_invite(
     org_id: int,
     invite_code: str,
 ):
+    if (
+        await get_org_join_mechanism(request, org_id, current_user, db_session)
+        != "inviteOnly"
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="This organization does not require an invite code",
+        )
 
     # Check if invite code exists
     inviteCode = await get_invite_code(
@@ -148,9 +169,14 @@ async def create_user_with_invite(
     # Usage check
     check_limits_with_usage("members", org_id, db_session)
 
-    
-
-    user = await create_user(request, db_session, current_user, user_object, org_id)
+    user = await create_user(
+        request,
+        db_session,
+        current_user,
+        user_object,
+        org_id,
+        allow_invite_only=True,
+    )
 
     # Check if invite code contains UserGroup
     if inviteCode.get("usergroup_id"): # type: ignore
