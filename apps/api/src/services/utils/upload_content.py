@@ -82,9 +82,8 @@ async def upload_content(
                 detail=f"File format {file_format} not allowed",
             )
 
-    ensure_directory_exists(f"content/{type_of_dir}/{uuid}/{directory}")
-
     if content_delivery == "filesystem":
+        ensure_directory_exists(f"content/{type_of_dir}/{uuid}/{directory}")
         # upload file to server
         with open(
             f"content/{type_of_dir}/{uuid}/{directory}/{file_and_format}",
@@ -94,28 +93,23 @@ async def upload_content(
             f.close()
 
     elif content_delivery == "s3api":
-        # Upload to server then to s3 (AWS Keys are stored in environment variables and are loaded by boto3)
-        # TODO: Improve implementation of this
+        # Upload directly to s3 (AWS Keys are stored in environment variables and are loaded by boto3)
         print("Uploading to s3...")
         s3 = boto3.client(
             "s3",
             endpoint_url=learnhouse_config.hosting_config.content_delivery.s3api.endpoint_url,
         )
 
-        # Upload file to server
-        with open(
-            f"content/{type_of_dir}/{uuid}/{directory}/{file_and_format}",
-            "wb",
-        ) as f:
-            f.write(file_binary)
-            f.close()
+        bucket_name = learnhouse_config.hosting_config.content_delivery.s3api.bucket_name or "learnhouse-media"
+        file_path = f"content/{type_of_dir}/{uuid}/{directory}/{file_and_format}"
 
         print("Uploading to s3 using boto3...")
         try:
-            s3.upload_file(
-                f"content/{type_of_dir}/{uuid}/{directory}/{file_and_format}",
-                "learnhouse-media",
-                f"content/{type_of_dir}/{uuid}/{directory}/{file_and_format}",
+            s3.put_object(
+                Bucket=bucket_name,
+                Key=file_path,
+                Body=file_binary,
+                ContentType=f"image/{file_format}" if file_format in ['jpg', 'jpeg', 'png', 'gif', 'webp'] else "application/octet-stream"
             )
         except ClientError as e:
             print(e)
@@ -123,8 +117,8 @@ async def upload_content(
         print("Checking if file exists in s3...")
         try:
             s3.head_object(
-                Bucket="learnhouse-media",
-                Key=f"content/{type_of_dir}/{uuid}/{directory}/{file_and_format}",
+                Bucket=bucket_name,
+                Key=file_path,
             )
             print("File upload successful!")
         except Exception as e:
