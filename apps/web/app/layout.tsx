@@ -8,6 +8,7 @@ import { isDevEnv } from './auth/options'
 import Script from 'next/script'
 import '../lib/i18n'
 import I18nProvider from '@components/Contexts/I18nContext'
+import { ThemeProvider } from '@components/Contexts/ThemeContext'
 
 export default function RootLayout({
   children,
@@ -27,23 +28,30 @@ export default function RootLayout({
         {/* Inject runtime configuration for client-side access */}
         <Script src="/runtime-config.js" strategy="beforeInteractive" />
         {isDevEnv ? '' : <Script data-website-id="a1af6d7a-9286-4a1f-8385-ddad2a29fcbb" src="/umami/script.js" />}
-        <SessionProvider key="session-provider" refetchInterval={60000}>
-          <LHSessionProvider>
-            <I18nProvider>
-              <StyledComponentsRegistry>
-                <motion.main
-                  variants={variants} // Pass the variant object into Framer Motion
-                  initial="hidden" // Set the initial state to variants.hidden
-                  animate="enter" // Animated state to variants.enter
-                  exit="exit" // Exit state (used later) to variants.exit
-                  transition={{ type: 'tween' }} // Set the transition to tween
-                >
-                  {children}
-                </motion.main>
-              </StyledComponentsRegistry>
-            </I18nProvider>
-          </LHSessionProvider>
-        </SessionProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SessionProvider key="session-provider" refetchInterval={60000}>
+            <LHSessionProvider>
+              <I18nProvider>
+                <StyledComponentsRegistry>
+                  <motion.main
+                    variants={variants} // Pass the variant object into Framer Motion
+                    initial="hidden" // Set the initial state to variants.hidden
+                    animate="enter" // Animated state to variants.enter
+                    exit="exit" // Exit state (used later) to variants.exit
+                    transition={{ type: 'tween' }} // Set the transition to tween
+                  >
+                    {children}
+                  </motion.main>
+                </StyledComponentsRegistry>
+              </I18nProvider>
+            </LHSessionProvider>
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
