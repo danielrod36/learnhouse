@@ -7,13 +7,13 @@ import { linkResourcesToUserGroup } from '@services/usergroups/usergroups';
 import { swrFetcher } from '@services/utils/ts/requests';
 import { Info } from 'lucide-react';
 import Link from 'next/link';
-import React, { useEffect } from 'react'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
 import toast from 'react-hot-toast';
 import useSWR, { mutate } from 'swr'
 import { useTranslation } from 'react-i18next'
 
 type LinkToUserGroupProps = {
-    setUserGroupModal: React.Dispatch<React.SetStateAction<boolean>>
+    setUserGroupModal: Dispatch<SetStateAction<boolean>>
 }
 
 function LinkToUserGroup(props: LinkToUserGroupProps) {
@@ -24,11 +24,19 @@ function LinkToUserGroup(props: LinkToUserGroupProps) {
     const access_token = session?.data?.tokens?.access_token;
     const courseStructure = course.courseStructure
 
+    const [selectedUserGroup, setSelectedUserGroup] = React.useState<string | number | null>(null)
+
     const { data: usergroups } = useSWR(
         courseStructure && org ? `${getAPIUrl()}usergroups/org/${org.id}` : null,
-        (url) => swrFetcher(url, access_token)
+        (url) => swrFetcher(url, access_token),
+        {
+            onSuccess: (data) => {
+                if (data && data.length > 0) {
+                    setSelectedUserGroup(data[0].id)
+                }
+            }
+        }
     )
-    const [selectedUserGroup, setSelectedUserGroup] = React.useState(null) as any
 
 
     const handleLink = async () => {
@@ -43,12 +51,6 @@ function LinkToUserGroup(props: LinkToUserGroupProps) {
         }
     }
 
-    useEffect(() => {
-        if (usergroups && usergroups.length > 0) {
-            setSelectedUserGroup(usergroups[0].id)
-        }
-    }
-        , [usergroups])
 
     return (
         <div className='flex flex-col space-y-1 '>
@@ -63,9 +65,9 @@ function LinkToUserGroup(props: LinkToUserGroupProps) {
 
                         <select
                             onChange={(e) => setSelectedUserGroup(e.target.value)}
-                            defaultValue={selectedUserGroup}
+                            defaultValue={selectedUserGroup as string | number | undefined}
                         >
-                            {usergroups && usergroups.map((group: any) => (
+                            {usergroups && usergroups.map((group: { id: string | number, name: string }) => (
                                 <option key={group.id} value={group.id}>{group.name}</option>
                             ))}
 
