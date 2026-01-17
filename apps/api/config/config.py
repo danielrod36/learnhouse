@@ -20,6 +20,7 @@ class SecurityConfig(BaseModel):
 
 class AIConfig(BaseModel):
     openai_api_key: str | None
+    openai_base_url: str | None
     is_ai_enabled: bool | None
 
 
@@ -206,12 +207,17 @@ def get_learnhouse_config() -> LearnHouseConfig:
 
     # AI Config
     env_openai_api_key = os.environ.get("LEARNHOUSE_OPENAI_API_KEY")
+    env_openai_base_url = os.environ.get("LEARNHOUSE_OPENAI_BASE_URL")
     env_is_ai_enabled_str = os.environ.get("LEARNHOUSE_IS_AI_ENABLED")
     
     openai_api_key = env_openai_api_key or yaml_config.get("ai_config", {}).get(
         "openai_api_key"
     )
     
+    openai_base_url = env_openai_base_url or yaml_config.get("ai_config", {}).get(
+        "openai_base_url"
+    )
+
     # Parse is_ai_enabled from env or yaml
     if env_is_ai_enabled_str:
         is_ai_enabled = env_is_ai_enabled_str.lower() in ("true", "1", "yes")
@@ -280,6 +286,7 @@ def get_learnhouse_config() -> LearnHouseConfig:
     # AI Config
     ai_config = AIConfig(
         openai_api_key=openai_api_key,
+        openai_base_url=openai_base_url,
         is_ai_enabled=bool(is_ai_enabled),
     )
 

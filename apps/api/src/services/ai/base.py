@@ -11,8 +11,14 @@ LH_CONFIG = get_learnhouse_config()
 def get_openai_client() -> OpenAI:
     """Get OpenAI client instance"""
     api_key = getattr(LH_CONFIG.ai_config, 'openai_api_key', None)
+    base_url = getattr(LH_CONFIG.ai_config, 'openai_base_url', None)
+
     if not api_key:
         raise Exception("OpenAI API key not configured")
+
+    if base_url:
+        return OpenAI(api_key=api_key, base_url=base_url)
+
     return OpenAI(api_key=api_key)
 
 def ask_ai(
