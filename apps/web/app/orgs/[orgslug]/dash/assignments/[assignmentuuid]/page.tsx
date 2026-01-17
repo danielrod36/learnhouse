@@ -1,6 +1,6 @@
 'use client';
 import BreadCrumbs from '@components/Dashboard/Misc/BreadCrumbs'
-import { BookOpen, BookX, EllipsisVertical, Eye, Layers2, Monitor, Pencil, UserRoundPen } from 'lucide-react'
+import { BookOpen, BookX, EllipsisVertical, Eye, Layers2, Pencil, UserRoundPen } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { AssignmentProvider, useAssignments } from '@components/Contexts/Assignments/AssignmentContext';
 import ToolTip from '@components/Objects/StyledElements/Tooltip/Tooltip';
@@ -15,7 +15,6 @@ import { updateActivity } from '@services/courses/activities';
 // Lazy Loading
 import dynamic from 'next/dynamic';
 import AssignmentEditorSubPage from './subpages/AssignmentEditorSubPage';
-import { useMediaQuery } from 'usehooks-ts';
 import EditAssignmentModal from '@components/Objects/Modals/Activities/Assignments/EditAssignmentModal';
 import { useTranslation } from 'react-i18next';
 const AssignmentSubmissionsSubPage = dynamic(() => import('./subpages/AssignmentSubmissionsSubPage'))
@@ -25,28 +24,13 @@ function AssignmentEdit() {
     const params = useParams<{ assignmentuuid: string; }>()
     const searchParams = useSearchParams()
     const [selectedSubPage, setSelectedSubPage] = React.useState(searchParams.get('subpage') || 'editor')
-    const isMobile = useMediaQuery('(max-width: 767px)')
 
-    if (isMobile) {
-        // TODO: Work on a better mobile experience
-        return (
-          <div className="h-screen w-full bg-[#f8f8f8] flex items-center justify-center p-4">
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <h2 className="text-xl font-bold mb-4">{t('dashboard.assignments.detail.mobile.title')}</h2>
-              <Monitor className='mx-auto my-5' size={60} />    
-              <p>{t('dashboard.assignments.detail.mobile.message1')}</p>
-              <p>{t('dashboard.assignments.detail.mobile.message2')}</p>
-            </div>
-          </div>
-        )
-    }
-    
     return (
         <div className='flex w-full flex-col'>
             <AssignmentProvider assignment_uuid={'assignment_' + params.assignmentuuid}>
                 <div className='flex flex-col  bg-white z-50 shadow-[0px_4px_16px_rgba(0,0,0,0.06)] nice-shadow'>
-                    <div className='flex justify-between mr-10 h-full'>
-                        <div className="pl-10 mr-10 tracking-tighter">
+                    <div className='flex flex-col md:flex-row justify-between md:mr-10 h-full'>
+                        <div className="pl-4 md:pl-10 md:mr-10 tracking-tighter pt-4 md:pt-0">
                             <BrdCmpx />
                             <div className="w-100 flex justify-between">
                                 <div className="flex font-bold text-2xl">
@@ -54,11 +38,11 @@ function AssignmentEdit() {
                                 </div>
                             </div>
                         </div>
-                        <div className='flex flex-col justify-center antialiased'>
+                        <div className='flex flex-col justify-center antialiased px-4 md:px-0'>
                             <PublishingState />
                         </div>
                     </div>
-                    <div className='flex space-x-2 pt-2 text-sm tracking-tight font-semibold pl-10 mr-10'>
+                    <div className='flex space-x-2 pt-2 text-sm tracking-tight font-semibold pl-4 md:pl-10 mr-10 pb-2 md:pb-0 overflow-x-auto'>
                         <div
                             onClick={() => setSelectedSubPage('editor')}
                             className={`flex space-x-4 py-2 w-fit text-center border-black transition-all ease-linear ${selectedSubPage === 'editor'
@@ -85,7 +69,7 @@ function AssignmentEdit() {
                         </div>
                     </div>
                 </div>
-                <div className="flex h-full w-full">
+                <div className="flex flex-col md:flex-row h-full w-full">
                     {selectedSubPage === 'editor' && <AssignmentEditorSubPage assignmentuuid={params.assignmentuuid} />}
                     {selectedSubPage === 'submissions' && <AssignmentSubmissionsSubPage assignment_uuid={params.assignmentuuid} />}
                 </div>
@@ -133,11 +117,11 @@ function PublishingState() {
 
     return (
         <>
-            <div className='flex mx-auto mt-5 items-center space-x-4'>
-                <div className={`flex text-xs rounded-full px-3.5 py-2 mx-auto font-bold outline outline-1 ${!assignment?.assignment_object?.published ? 'outline-gray-300 bg-gray-200/60' : 'outline-green-300 bg-green-200/60'}`}>
+            <div className='flex flex-wrap gap-4 mx-auto mt-5 items-center mb-4 md:mb-0'>
+                <div className={`flex text-xs rounded-full px-3.5 py-2 font-bold outline outline-1 ${!assignment?.assignment_object?.published ? 'outline-gray-300 bg-gray-200/60' : 'outline-green-300 bg-green-200/60'}`}>
                     {assignment?.assignment_object?.published ? t('dashboard.assignments.detail.publishing.published') : t('dashboard.assignments.detail.publishing.unpublished')}
                 </div>
-                <div><EllipsisVertical className='text-gray-500' size={13} /></div>
+                <div className="hidden md:block"><EllipsisVertical className='text-gray-500' size={13} /></div>
 
                 <ToolTip
                     side='left'
@@ -205,7 +189,6 @@ function PublishingState() {
 
 function AssignmentTitle() {
     const { t } = useTranslation()
-    const assignment = useAssignments() as any;
     
     return (
         <div className="flex items-center gap-2">

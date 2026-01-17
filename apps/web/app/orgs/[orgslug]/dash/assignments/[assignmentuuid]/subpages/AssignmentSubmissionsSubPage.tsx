@@ -5,7 +5,7 @@ import { getAPIUrl } from '@services/config/config';
 import { getUserAvatarMediaDirectory } from '@services/media/media';
 import { swrFetcher } from '@services/utils/ts/requests';
 import { SendHorizonal, UserCheck, X } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import useSWR from 'swr';
 import EvaluateAssignment from './Modals/EvaluateAssignment';
 import { AssignmentProvider } from '@components/Contexts/Assignments/AssignmentContext';
@@ -18,14 +18,10 @@ function AssignmentSubmissionsSubPage({ assignment_uuid }: { assignment_uuid: st
     const session = useLHSession() as any;
     const access_token = session?.data?.tokens?.access_token;
 
-    const { data: assignmentSubmission, error: assignmentError } = useSWR(
+    const { data: assignmentSubmission } = useSWR(
         `${getAPIUrl()}assignments/assignment_${assignment_uuid}/submissions`,
         (url) => swrFetcher(url, access_token)
     );
-
-    useEffect(() => {
-        console.log(assignmentSubmission);
-    }, [session, assignmentSubmission]);
 
     const renderSubmissions = (status: string) => {
         return assignmentSubmission
@@ -36,8 +32,8 @@ function AssignmentSubmissionsSubPage({ assignment_uuid }: { assignment_uuid: st
     };
 
     return (
-        <div className='pl-10 mr-10 flex flex-col pt-3 w-full'>
-            <div className='flex flex-row w-full'>
+        <div className='pl-4 md:pl-10 mr-4 md:mr-10 flex flex-col pt-3 w-full'>
+            <div className='flex flex-col md:flex-row w-full'>
                 <div className='flex-1'>
                     <div className='flex w-fit mx-auto px-3.5 py-1 bg-rose-600/80 space-x-2 my-5 items-center text-sm font-bold text-white rounded-full'>
                         <X size={18} />
@@ -80,18 +76,13 @@ function SubmissionBox({ assignment_uuid, user_id, submission }: any) {
         submission_id: '',
     });
 
-    const { data: user, error: userError } = useSWR(
+    const { data: user } = useSWR(
         `${getAPIUrl()}users/id/${user_id}`,
         (url) => swrFetcher(url, access_token)
     );
 
-    useEffect(() => {
-        console.log(user);
-    }
-        , [session, user]);
-
     return (
-            <div className='flex flex-row bg-white shadow-[0px_4px_16px_rgba(0,0,0,0.06)] nice-shadow rounded-lg p-4 w-[350px] mx-auto'>
+            <div className='flex flex-row bg-white shadow-[0px_4px_16px_rgba(0,0,0,0.06)] nice-shadow rounded-lg p-4 w-full max-w-[350px] mx-auto'>
             <div className='flex flex-col space-y-2 w-full'>
                 <div className='flex justify-between w-full'>
                     <h2 className='uppercase text-slate-400 text-xs tracking-tight font-semibold'>{t('dashboard.assignments.submissions.submission_label')}</h2>

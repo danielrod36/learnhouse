@@ -50,7 +50,7 @@ function AssignmentTaskEditor({ page }: any) {
         <div className="flex flex-col font-black text-sm w-full z-20">
             {assignmentTaskState.assignmentTask && Object.keys(assignmentTaskState.assignmentTask).length > 0 && (
                 <div className='flex flex-col space-y-3'>
-                    <div className='flex flex-col bg-white pl-10 pr-10 text-sm tracking-tight  z-10 shadow-[0px_4px_16px_rgba(0,0,0,0.06)] pt-5 mb-3 nice-shadow'>
+                    <div className='flex flex-col bg-white px-4 md:px-10 text-sm tracking-tight  z-10 shadow-[0px_4px_16px_rgba(0,0,0,0.06)] pt-5 mb-3 nice-shadow'>
                         <div className='flex py-1 justify-between items-center'>
                             <div className='font-semibold text-lg '>
                                 {assignmentTaskState?.assignmentTask.title}
@@ -91,14 +91,14 @@ function AssignmentTaskEditor({ page }: any) {
                             </div>
                         </div>
                     </div>
-                    <div className='ml-10 mr-10 mt-10 mx-auto bg-white rounded-xl shadow-xs px-6 py-5 nice-shadow'>
+                    <div className='mx-4 md:mx-10 mt-10 bg-white rounded-xl shadow-xs px-6 py-5 nice-shadow'>
                         {selectedSubPage === 'general' && <AssignmentTaskGeneralEdit />}
                         {selectedSubPage === 'content' && <AssignmentTaskContentEdit />}
                     </div>
                 </div>
             )}
             {Object.keys(assignmentTaskState.assignmentTask).length == 0 && (
-                <div className='flex flex-col h-full bg-white pl-10 pr-10 text-sm tracking-tight  z-10 shadow-[0px_4px_16px_rgba(0,0,0,0.06)] pt-5'>
+                <div className='flex flex-col h-full bg-white px-4 md:px-10 text-sm tracking-tight  z-10 shadow-[0px_4px_16px_rgba(0,0,0,0.06)] pt-5'>
                     <div className='flex justify-center items-center h-full text-gray-300 antialiased'>
                         <div className='flex flex-col space-y-2 items-center'>
                             <TentTree size={60} />
