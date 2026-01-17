@@ -1,0 +1,45 @@
+
+> learnhouse@0.1.0 dev /app/apps/web
+> next dev --turbopack
+
+⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+⚠ `eslint` configuration in next.config.js is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+⚠ Invalid next.config.js options detected:
+⚠     Unrecognized key(s) in object: 'eslint'
+⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /app/pnpm-lock.yaml as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles:
+   * /app/apps/web/pnpm-lock.yaml
+
+▲ Next.js 16.1.1 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.2:3001
+
+✓ Starting...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+✓ Ready in 1422ms
+○ Compiling /_not-found/page ...
+ GET /test-editor 404 in 6.7s (compile: 5.4s, proxy.ts: 218ms, render: 1087ms)
+[next-auth][warn][NEXTAUTH_URL]
+https://next-auth.js.org/warnings#nextauth_url
+[next-auth][warn][NO_SECRET]
+https://next-auth.js.org/warnings#no_secret
+[next-auth][warn][DEBUG_ENABLED]
+https://next-auth.js.org/warnings#debug_enabled
+ GET /api/auth/session 200 in 3.1s (compile: 3.1s, render: 51ms)
+ GET /test-editor 404 in 93ms (compile: 13ms, proxy.ts: 8ms, render: 72ms)
+✓ Compiled in 286ms
+○ Compiling /orgs/[orgslug]/test-editor ...
+ GET /test-editor 200 in 7.9s (compile: 6.7s, proxy.ts: 30ms, render: 1192ms)
+[next-auth][warn][NEXTAUTH_URL]
+https://next-auth.js.org/warnings#nextauth_url
+[next-auth][warn][NO_SECRET]
+https://next-auth.js.org/warnings#no_secret
+[next-auth][warn][DEBUGPersisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)

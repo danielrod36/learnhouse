@@ -21,7 +21,7 @@ import WarningCallout from './Extensions/Callout/Warning/WarningCallout'
 import ImageBlock from './Extensions/Image/ImageBlock'
 import Youtube from '@tiptap/extension-youtube'
 import VideoBlock from './Extensions/Video/VideoBlock'
-import { Eye, Monitor } from 'lucide-react'
+import { Eye } from 'lucide-react'
 import MathEquationBlock from './Extensions/MathEquation/MathEquationBlock'
 import PDFBlock from './Extensions/PDF/PDFBlock'
 import QuizBlock from './Extensions/Quiz/QuizBlock'
@@ -54,7 +54,6 @@ import Badges from './Extensions/Badges/Badges'
 import Buttons from './Extensions/Buttons/Buttons'
 import Flipcard from './Extensions/Flipcard/Flipcard'
 import Scenarios from './Extensions/Scenarios/Scenarios'
-import { useMediaQuery } from 'usehooks-ts'
 import UserAvatar from '../UserAvatar'
 import UserBlock from './Extensions/Users/UserBlock'
 
@@ -183,21 +182,6 @@ function Editor(props: Editor) {
     immediatelyRender: false,
   })
 
-
-  const isMobile = useMediaQuery('(max-width: 767px)')
-  if (isMobile) {
-    // TODO: Work on a better editor mobile experience
-    return (
-      <div className="h-screen w-full bg-[#f8f8f8] flex items-center justify-center p-4">
-        <div className="bg-white p-6 rounded-lg shadow-md text-center">
-          <h2 className="text-xl font-bold mb-4">Desktop Only</h2>
-          <Monitor className='mx-auto my-5' size={60} />
-          <p>The editor is only accessible from a desktop device.</p>
-          <p>Please switch to a desktop to view.</p>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <Page>
@@ -368,18 +352,43 @@ const EditorTop = styled.div`
   z-index: 303;
   width: -webkit-fill-available;
   width: -moz-available;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin: 10px;
+    width: calc(100% - 20px);
+    gap: 10px;
+  }
 `
 
 // Inside EditorTop
 const EditorDocSection = styled.div`
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `
 const EditorUsersSection = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 5px;
+
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 `
 
 const EditorLeftOptionsSection = styled.div`
@@ -394,6 +403,18 @@ const EditorInfoWrapper = styled.div`
   display: flex;
   flex-direction: row;
   margin-bottom: 5px;
+
+  @media (max-width: 768px) {
+    overflow-x: auto;
+    white-space: nowrap;
+
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 `
 const EditorButtonsWrapper = styled.div``
 
@@ -447,6 +468,10 @@ export const EditorContentWrapper = styled.div`
   border-radius: 10px;
   z-index: 300;
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.03);
+
+  @media (max-width: 768px) {
+    margin: 220px 10px 40px 10px;
+  }
 
   // disable chrome outline
 

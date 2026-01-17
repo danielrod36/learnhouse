@@ -521,6 +521,18 @@ const ToolButtonsWrapper = styled.div`
   flex-direction: row;
   align-items: left;
   justify-content: left;
+
+  overflow-x: auto;
+  max-width: 100%;
+  padding-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `
 
 const ToolBtn = styled.div`
