@@ -850,6 +850,10 @@
         "pagination": {
           "showing": "显示第 {{start}} 到 {{end}} 条日志，共 {{total}} 条"
         },
+        "enterprise_only": "审计日志仅在企业版计划中可用",
+        "enterprise_feature": "企业版功能",
+        "enterprise_description": "审计日志是一项高级功能，仅适用于我们的企业版计划中的组织。升级以全面了解您组织的活动。",
+        "upgrade_button": "升级到企业版",
         "modals": {
           "payload": {
             "title": "事件载荷",

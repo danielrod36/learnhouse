@@ -12,7 +12,7 @@ import {
 } from "@components/ui/dropdown-menu"
 
 const LanguageSwitcher = () => {
-  const { i18n, t } = useTranslation()
+  const { i18n } = useTranslation()
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng)
