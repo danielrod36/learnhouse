@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 from src.db.courses.chapter_activities import ChapterActivity
 from fastapi import HTTPException, Request, status
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 from src.db.courses.activities import Activity
 from src.db.courses.courses import Course
 from src.db.trail_runs import TrailRun, TrailRunRead
@@ -66,18 +66,29 @@ async def get_user_trails(
     ]
 
     # Add course object and total activities in a course to trail runs
-    for trail_run in trail_runs:
-        statement = select(Course).where(Course.id == trail_run.course_id)
-        course = db_session.exec(statement).first()
-        trail_run.course = course.model_dump() if course else {}
+    course_ids = [tr.course_id for tr in trail_runs if tr.course_id]
 
-        # Add number of activities (steps) in a course
-        statement = select(ChapterActivity).where(
-            ChapterActivity.course_id == trail_run.course_id
+    if course_ids:
+        # Batch fetch courses
+        courses_stmt = select(Course).where(Course.id.in_(course_ids))
+        courses = db_session.exec(courses_stmt).all()
+        courses_map = {c.id: c.model_dump() for c in courses}
+
+        # Batch fetch activity counts
+        activities_stmt = (
+            select(ChapterActivity.course_id, func.count(ChapterActivity.id))
+            .where(ChapterActivity.course_id.in_(course_ids))
+            .group_by(ChapterActivity.course_id)
         )
-        course_total_steps = db_session.exec(statement)
-        # count number of activities in a this list
-        trail_run.course_total_steps = len(course_total_steps.all())
+        activity_counts = db_session.exec(activities_stmt).all()
+        activity_counts_map = {res[0]: res[1] for res in activity_counts}
+    else:
+        courses_map = {}
+        activity_counts_map = {}
+
+    for trail_run in trail_runs:
+        trail_run.course = courses_map.get(trail_run.course_id, {})
+        trail_run.course_total_steps = activity_counts_map.get(trail_run.course_id, 0)
 
     for trail_run in trail_runs:
         statement = select(TrailStep).where(TrailStep.trailrun_id == trail_run.id)
@@ -151,18 +162,29 @@ async def get_user_trail_with_orgid(
     ]
 
     # Add course object and total activities in a course to trail runs
-    for trail_run in trail_runs:
-        statement = select(Course).where(Course.id == trail_run.course_id)
-        course = db_session.exec(statement).first()
-        trail_run.course = course.model_dump() if course else {}
+    course_ids = [tr.course_id for tr in trail_runs if tr.course_id]
 
-        # Add number of activities (steps) in a course
-        statement = select(ChapterActivity).where(
-            ChapterActivity.course_id == trail_run.course_id
+    if course_ids:
+        # Batch fetch courses
+        courses_stmt = select(Course).where(Course.id.in_(course_ids))
+        courses = db_session.exec(courses_stmt).all()
+        courses_map = {c.id: c.model_dump() for c in courses}
+
+        # Batch fetch activity counts
+        activities_stmt = (
+            select(ChapterActivity.course_id, func.count(ChapterActivity.id))
+            .where(ChapterActivity.course_id.in_(course_ids))
+            .group_by(ChapterActivity.course_id)
         )
-        course_total_steps = db_session.exec(statement)
-        # count number of activities in a this list
-        trail_run.course_total_steps = len(course_total_steps.all())
+        activity_counts = db_session.exec(activities_stmt).all()
+        activity_counts_map = {res[0]: res[1] for res in activity_counts}
+    else:
+        courses_map = {}
+        activity_counts_map = {}
+
+    for trail_run in trail_runs:
+        trail_run.course = courses_map.get(trail_run.course_id, {})
+        trail_run.course_total_steps = activity_counts_map.get(trail_run.course_id, 0)
 
     for trail_run in trail_runs:
         statement = select(TrailStep).where(TrailStep.trailrun_id == trail_run.id)
