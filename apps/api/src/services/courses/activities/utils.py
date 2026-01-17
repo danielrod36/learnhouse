@@ -13,6 +13,8 @@ def structure_activity_content_by_type(activity):
     headings = []
     callouts = []
     paragraphs = []
+    questions = []
+    answers = []
 
     for item in content:
         if "content" in item:
@@ -26,8 +28,15 @@ def structure_activity_content_by_type(activity):
                 )
             elif item["type"] == "paragraph" and "text" in item["content"][0]:
                 paragraphs.append(item["content"][0]["text"])
-
-    # TODO: Get Questions and Answers (if any)
+        elif item["type"] == "blockQuiz":
+            if "attrs" in item and "questions" in item["attrs"]:
+                for q in item["attrs"]["questions"]:
+                    if "question" in q:
+                        questions.append(q["question"])
+                    if "answers" in q:
+                        for a in q["answers"]:
+                            if "answer" in a:
+                                answers.append(a["answer"])
 
     data_array = []
 
@@ -40,6 +49,12 @@ def structure_activity_content_by_type(activity):
     # Add Paragraphs
     data_array.append({"Paragraphs": paragraphs})
 
+    # Add Questions
+    data_array.append({"Questions": questions})
+
+    # Add Answers
+    data_array.append({"Answers": answers})
+
     return data_array
 
 
@@ -49,7 +64,6 @@ def serialize_activity_text_to_ai_comprehensible_text(
     activity: ActivityRead,
     isActivityEmpty: bool = False,
 ):
-
     if isActivityEmpty:
         text = (
             "Use this as a context "
@@ -79,6 +93,16 @@ def serialize_activity_text_to_ai_comprehensible_text(
     for paragraph in data_array[2]["Paragraphs"]:
         serialized_paragraphs += paragraph + " "
 
+    # Serialize Questions
+    serialized_questions = ""
+    for question in data_array[3]["Questions"]:
+        serialized_questions += question + " "
+
+    # Serialize Answers
+    serialized_answers = ""
+    for answer in data_array[4]["Answers"]:
+        serialized_answers += answer + " "
+
     # Get a text that is comprehensible by the AI
     text = (
         "Use this as a context "
@@ -94,6 +118,10 @@ def serialize_activity_text_to_ai_comprehensible_text(
         + serialized_callouts
         + '" These are the paragraphs: "'
         + serialized_paragraphs
+        + '" These are the questions: "'
+        + serialized_questions
+        + '" These are the answers: "'
+        + serialized_answers
         + '"'
     )
 
