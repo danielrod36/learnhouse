@@ -14,12 +14,13 @@ security:
 hosting_config:
   domain: learnhouse.app
   ssl: true
-  port: 1338
+  port: 1338 # Default internal port, overridden by LEARNHOUSE_PORT (default 9000 in Docker)
   allowed_origins:
     - http://localhost:3000
     - http://localhost:3001
+    # In production, set LEARNHOUSE_ALLOWED_ORIGINS=https://yourdomain.com
   cookies_config:
-    domain: ".localhost"
+    domain: ".localhost" # Set LEARNHOUSE_COOKIE_DOMAIN in production
   allowed_regexp: '\b((?:https?://)[^\s/$.?#].[^\s]*)\b'
   content_delivery:
     type: "filesystem" # "filesystem" or "s3api"
