@@ -1,8 +1,10 @@
+import logging
 from datetime import datetime
 from typing import Optional
 from fastapi import HTTPException, Request
 from pydantic import BaseModel
 from sqlmodel import Session, select
+from src.db.organization_config import OrganizationConfig, OrganizationConfigBase
 from src.db.organizations import Organization
 from src.db.user_organizations import UserOrganization
 from src.db.users import AnonymousUser, PublicUser, User
@@ -11,7 +13,7 @@ from src.security.features_utils.usage import (
     increase_feature_usage,
 )
 from src.services.orgs.invites import get_invite_code
-from src.services.orgs.orgs import get_org_join_mechanism
+from src.services.orgs.orgs import rbac_check
 
 
 class JoinOrg(BaseModel):
@@ -37,11 +39,29 @@ async def join_org(
             detail="Organization not found",
         )
 
-    check_limits_with_usage("members", org.id, db_session)
+    # RBAC check
+    await rbac_check(request, org.org_uuid, current_user, "read", db_session)
 
-    join_method = await get_org_join_mechanism(
-        request, args.org_id, current_user, db_session
-    )
+    # Get org config
+    statement = select(OrganizationConfig).where(OrganizationConfig.org_id == org.id)
+    result = db_session.exec(statement)
+
+    org_config = result.first()
+
+    if org_config is None:
+        logging.error(f"Organization {org.id} has no config")
+        raise HTTPException(
+            status_code=404,
+            detail="Organization config not found",
+        )
+
+    config = org_config.config
+
+    # Get the signup mechanism
+    config = OrganizationConfigBase(**config)
+    join_method = config.features.members.signup_mode
+
+    check_limits_with_usage("members", org.id, db_session)
 
     # Get User
     statement = select(User).where(User.id == args.user_id)
