@@ -13,8 +13,7 @@ import useSWR, { mutate } from 'swr'
 import { useTranslation } from 'react-i18next'
 
 type LinkToUserGroupProps = {
-    // React function, todo: fix types
-    setUserGroupModal: any
+    setUserGroupModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 function LinkToUserGroup(props: LinkToUserGroupProps) {
