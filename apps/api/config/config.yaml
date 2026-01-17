@@ -47,4 +47,5 @@ payments_config:
 
 ai_config:
   openai_api_key: ""
+  openai_base_url: ""
   is_ai_enabled: false
