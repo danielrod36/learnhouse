@@ -12,7 +12,7 @@ function AssignmentEditorSubPage({ assignmentuuid }: { assignmentuuid: string })
     const { t } = useTranslation()
     return (
         <AssignmentsTaskProvider>
-            <div className='flex w-[400px] flex-col h-full custom-dots-bg'>
+            <div className='flex w-full md:w-[400px] flex-col h-full custom-dots-bg'>
                 <div className='flex mx-auto px-3.5 py-1 bg-neutral-600/80 space-x-2 my-5 items-center text-sm font-bold text-white rounded-full'>
                     <LayoutList size={18} />
                     <p>{t('dashboard.assignments.editor.tasks_title')}</p>

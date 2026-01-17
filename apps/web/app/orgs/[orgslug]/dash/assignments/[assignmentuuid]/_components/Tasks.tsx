@@ -23,7 +23,7 @@ function AssignmentTasks({ assignment_uuid }: any) {
 
     return (
         <div className='flex w-full'>
-            <div className='flex flex-col space-y-3 mx-auto'>
+            <div className='flex flex-col space-y-3 mx-auto w-full px-4 md:w-auto md:px-0'>
                 {assignments && assignments?.assignment_tasks?.length < 10 && (<Modal
                     isDialogOpen={isNewTaskModalOpen}
                     onOpenChange={setIsNewTaskModalOpen}
@@ -45,7 +45,7 @@ function AssignmentTasks({ assignment_uuid }: any) {
                     return (
                         <div
                             key={task.id}
-                            className='flex flex-col w-[250px] nice-shadow bg-white shadow-[0px_4px_16px_rgba(0,0,0,0.06)] p-3 rounded-md'
+                            className='flex flex-col w-full md:w-[250px] nice-shadow bg-white shadow-[0px_4px_16px_rgba(0,0,0,0.06)] p-3 rounded-md'
                             onClick={() => setSelectTask(task.assignment_task_uuid)}
                         >
                             <div className='flex items-center px-2 justify-between'>
