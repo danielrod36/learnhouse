@@ -11,6 +11,7 @@ from src.services.users.usergroups import add_users_to_usergroup
 from src.services.users.emails import (
     send_account_creation_email,
 )
+from src.services.orgs.orgs import get_org_join_mechanism
 from src.services.orgs.invites import get_invite_code
 from src.services.users.avatars import upload_avatar
 from src.db.roles import Role, RoleRead
@@ -42,6 +43,15 @@ async def create_user(
     user_object: UserCreate,
     org_id: int,
 ):
+    # Verifications
+    join_mechanism = await get_org_join_mechanism(
+        request, org_id, current_user, db_session
+    )
+    if join_mechanism == "inviteOnly":
+        raise HTTPException(
+            status_code=403,
+            detail="You need an invite to join this organization",
+        )
     user = User.model_validate(user_object)
 
     # RBAC check
@@ -133,6 +143,15 @@ async def create_user_with_invite(
     org_id: int,
     invite_code: str,
 ):
+    # Verifications
+    join_mechanism = await get_org_join_mechanism(
+        request, org_id, current_user, db_session
+    )
+    if join_mechanism != "inviteOnly":
+        raise HTTPException(
+            status_code=403,
+            detail="This organization does not require an invite code",
+        )
 
     # Check if invite code exists
     inviteCode = await get_invite_code(

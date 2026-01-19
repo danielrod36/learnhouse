@@ -645,6 +645,40 @@ async def update_org_signup_mechanism(
     return {"detail": "Signup mechanism updated"}
 
 
+async def get_org_join_mechanism(
+    request: Request,
+    org_id: int,
+    current_user: PublicUser | AnonymousUser,
+    db_session: Session,
+):
+    statement = select(Organization).where(Organization.id == org_id)
+    result = db_session.exec(statement)
+
+    org = result.first()
+
+    if not org:
+        raise HTTPException(
+            status_code=404,
+            detail="Organization not found",
+        )
+
+    # Get org config
+    statement = select(OrganizationConfig).where(OrganizationConfig.org_id == org.id)
+    result = db_session.exec(statement)
+
+    org_config = result.first()
+
+    if org_config is None:
+        logging.error(f"Organization {org_id} has no config")
+        raise HTTPException(
+            status_code=404,
+            detail="Organization config not found",
+        )
+
+    config_model = OrganizationConfigBase(**org_config.config)
+    return config_model.features.members.signup_mode
+
+
 async def upload_org_preview_service(
     preview_file: UploadFile,
     org_uuid: str,
