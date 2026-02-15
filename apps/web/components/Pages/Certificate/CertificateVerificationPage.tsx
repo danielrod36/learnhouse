@@ -5,7 +5,7 @@ import { getCertificateByUuid } from '@services/courses/certifications';
 import CertificatePreview from '@components/Dashboard/Pages/Course/EditCourseCertification/CertificatePreview';
 import { Shield, CheckCircle, XCircle, AlertTriangle, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { getUriWithOrg } from '@services/config/config';
+import { getUriWithOrg, getPublicUrl } from '@services/config/config';
 import { getCourseThumbnailMediaDirectory } from '@services/media/media';
 import { useOrg } from '@components/Contexts/OrgContext';
 
@@ -152,7 +152,7 @@ const CertificateVerificationPage: React.FC<CertificateVerificationPageProps> = 
     return null;
   }
 
-  const qrCodeLink = getUriWithOrg(org?.org_slug || '', `/certificates/${certificateData.certificate_user.user_certification_uuid}/verify`);
+  const qrCodeLink = getPublicUrl(org?.org_slug || '', `/certificates/${certificateData.certificate_user.user_certification_uuid}/verify`);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">

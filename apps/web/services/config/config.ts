@@ -241,14 +241,9 @@ export const getUriWithOrg = (orgslug: string, path: string) => {
     return `${protocol}${orgslug}.${baseDomain}${portSuffix}${path}`
   }
 
-  // Server-side fallback to config-based URL construction
-  const protocol = getLEARNHOUSE_HTTP_PROTOCOL()
-  const multi_org = isMultiOrgModeEnabled()
-  const domain = getLEARNHOUSE_DOMAIN()
-  if (multi_org) {
-    return `${protocol}${orgslug}.${domain}${path}`
-  }
-  return `${protocol}${domain}${path}`
+  // SSR: Return relative path - browser resolves to current origin
+  // This fixes the localhost fallback issue for IP:port deployments
+  return path
 }
 
 export const getUriWithoutOrg = (path: string) => {
@@ -261,6 +256,32 @@ export const getUriWithoutOrg = (path: string) => {
   const protocol = getLEARNHOUSE_HTTP_PROTOCOL()
   const domain = getLEARNHOUSE_DOMAIN()
   return `${protocol}${domain}${path}`
+}
+
+/**
+ * Generate absolute URL for external sharing (emails, social media, QR codes, RSS feeds).
+ * Use this when the URL will be used outside the browser context or must be absolute.
+ *
+ * @param orgslug - Organization slug (currently unused but kept for API consistency)
+ * @param path - Path (e.g., '/certificates/abc/verify')
+ * @returns Absolute URL string
+ */
+export const getPublicUrl = (orgslug: string, path: string): string => {
+  // Client-side: Can determine actual origin
+  if (typeof window !== 'undefined') {
+    return `${window.location.origin}${path}`
+  }
+
+  // SSR: Try to use configured domain
+  const domain = getLEARNHOUSE_DOMAIN()
+  if (domain && domain !== 'localhost' && domain !== 'localhost:3000') {
+    const protocol = getLEARNHOUSE_HTTP_PROTOCOL()
+    return `${protocol}${domain}${path}`
+  }
+
+  // Fallback: relative path with warning
+  console.warn('[getPublicUrl] Could not determine absolute URL, returning relative path')
+  return path
 }
 
 // OSS mode — watermark and branding always visible

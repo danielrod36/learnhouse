@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPodcastMeta } from '@services/podcasts/podcasts'
 import { getOrganizationContextInfo } from '@services/organizations/orgs'
-import { getUriWithOrg } from '@services/config/config'
+import { getUriWithOrg, getPublicUrl } from '@services/config/config'
 import { getPodcastThumbnailMediaDirectory, getEpisodeAudioMediaDirectory, getEpisodeThumbnailMediaDirectory } from '@services/media/media'
 
 export async function GET(
@@ -24,7 +24,7 @@ export async function GET(
     }
 
     const { podcast, episodes } = podcastMeta
-    const baseUrl = getUriWithOrg(orgSlug, '/')
+    const baseUrl = getPublicUrl(orgSlug, '/')
     const podcastUrl = `${baseUrl}podcast/${podcastuuid}`
 
     const imageUrl = podcast.thumbnail_image

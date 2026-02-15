@@ -1,7 +1,7 @@
-import { getUriWithOrg } from '@services/config/config'
+import { getPublicUrl } from '@services/config/config'
 
 export function getCanonicalUrl(orgslug: string, path: string): string {
-  return getUriWithOrg(orgslug, path).replace(/\/+$/, '')
+  return getPublicUrl(orgslug, path).replace(/\/+$/, '')
 }
 
 export function getOrgSeoConfig(org: any) {

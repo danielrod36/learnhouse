@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import { getUriWithOrg, getAPIUrl } from '@services/config/config'
+import { getUriWithOrg, getAPIUrl, getPublicUrl } from '@services/config/config'
 import PageLoading from '@components/Objects/Loaders/PageLoading'
 import { swrFetcher } from '@services/utils/ts/requests'
 import ActivityIndicators from '@components/Pages/Courses/ActivityIndicators'
@@ -255,7 +255,7 @@ const CourseClient = (props: any) => {
               <h1 className="text-3xl md:text-3xl font-bold">{course.name}</h1>
               <CourseShare
                 courseName={course.name}
-                courseUrl={getUriWithOrg(orgslug, `/course/${courseuuid}`)}
+                courseUrl={getPublicUrl(orgslug, `/course/${courseuuid}`)}
               />
             </div>
 
